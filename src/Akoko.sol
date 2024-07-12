@@ -14,7 +14,6 @@ contract Akoko {
 
     enum Status { Paid, Unpaid }
 
-    // todo: add a uuid string
     struct Order {
         string uuid;
         uint256 id; // hash of the uuid
