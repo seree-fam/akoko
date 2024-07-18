@@ -25,7 +25,7 @@ contract Akoko {
     mapping(uint256 => Order) public orders;
     mapping(uint256 => uint256) public escrowBalances;
 
-    event OrderPlaced(string indexed uuid, uint256 indexed id, Status status, uint256 amount, string recipient);
+    event OrderPlaced(string indexed uuid, uint256 indexed id, uint256 amount, string recipient);
     event Payout(uint256 indexed id, uint256 amount);
 
     modifier onlyOwner() {
@@ -58,7 +58,7 @@ contract Akoko {
         bool success = usdcToken.transferFrom(msg.sender, address(this), _usdcAmount);
         require(success, "USDC transfer failed");
 
-        emit OrderPlaced(_uuid, _id, Status.Unpaid, _usdcAmount, _recipient);
+        emit OrderPlaced(_uuid, _id, _usdcAmount, _recipient);
     }
 
     function payout(uint256 _id) public onlyOwner {
