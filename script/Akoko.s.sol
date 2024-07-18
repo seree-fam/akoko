@@ -15,7 +15,7 @@ contract AkokoScript is Script {
         bytes32 uuid = 0x6059a610d1bd4b0ab545b72187949c9e00000000000000000000000000000000;
         uint256 recipient = 233593456789;
 
-        ako.placeOrder{value: 0.000001 ether}(uuid, recipient);
+        ako.placeOrder{value: 0.0001 ether}(uuid, recipient);
 
         vm.stopBroadcast();
     }
