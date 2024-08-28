@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 import "./verifier_help.sol"; 
-
+// here, we should implement a proxy:
 contract SignatureVerifier {
     using P256 for bytes32;
 

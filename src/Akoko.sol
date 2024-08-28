@@ -98,7 +98,30 @@ contract Akoko {
     }
 
     function payout(bytes32 _uuid, bytes32 message_hash, uint256 r, uint256 s, uint256 x, uint256 y) public onlyOwner {
-        
+        // First, we should verify the signature
+        SignatureVerifier sigVerifier = new SignatureVerifier();
+        bool isValidSignature = sigVerifier.verify(message_hash, r, s, x, y);
+        require(isValidSignature, "Invalid signature");
+
+        // Second, we should pay out the funds depending on which token was used
+        Order storage order = orders[uint256(_uuid)];
+        require(order.status == Status.Unpaid, "Order already paid");
+
+        uint256 amount = escrowBalances[uint256(_uuid)];
+        require(amount > 0, "No funds to pay out");
+
+        if (order.token == Token.Ether) {
+            payable(msg.sender).transfer(amount);
+        } else if (order.token == Token.Usdc) {
+            require(usdcToken.transfer(msg.sender, amount), "USDC transfer failed");
+        } else if (order.token == Token.Usdt) {
+            require(usdtToken.transfer(msg.sender, amount), "USDT transfer failed");
+        }
+
+        order.status = Status.Paid;
+        escrowBalances[uint256(_uuid)] = 0;
+
+        emit Payout(_uuid);
     }
 
     receive() external payable {}
