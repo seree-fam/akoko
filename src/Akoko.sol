@@ -7,12 +7,11 @@ interface IERC20 {
     function transfer(address recipient, uint256 amount) external returns (bool);
     function balanceOf(address account) external view returns (uint256);
     function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
 }
 
 contract Akoko {
     address public owner;
-    address public usdcContract;
-    address public usdtContract;
     IERC20 public usdcToken;
     IERC20 public usdtToken;
 
@@ -36,8 +35,10 @@ contract Akoko {
         _;
     }
 
-    constructor () {
+    constructor (address _usdcContract, address _usdtContract) {
         owner = msg.sender;
+        usdcToken = IERC20(_usdcContract);
+        usdtToken = IERC20(_usdtContract);
     }
 
     function placeOrderEth(bytes32 _uuid) public payable {
@@ -122,6 +123,11 @@ contract Akoko {
         escrowBalances[uint256(_uuid)] = 0;
 
         emit Payout(_uuid);
+    }
+
+    function approveTokens(uint256 _usdcAmount, uint256 _usdtAmount) public {
+        require(usdcToken.approve(address(this), _usdcAmount), "USDC approve failed");
+        require(usdtToken.approve(address(this), _usdtAmount), "USDT approve failed");
     }
 
     receive() external payable {}
