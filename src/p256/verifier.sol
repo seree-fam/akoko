@@ -12,7 +12,7 @@ contract SignatureVerifier {
         uint256 s,
         uint256 x,
         uint256 y
-    ) public view returns (bool) {
+    ) external view returns (bool) {
         return messageHash.verifySignature(r, s, x, y);
     }
 }
